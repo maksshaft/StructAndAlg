@@ -1,0 +1,29 @@
+public class Stack<T> {
+ 
+    private final T[] data;
+    private int size;
+    private final int maxSize;
+ 
+    public Stack(Class<T> clazz, int maxSize) {
+        this.size = 0;
+        this.maxSize = maxSize;
+        data = (T[])Array.newInstance(clazz, maxSize);
+    }
+ 
+    public void push(final T object) {
+        if (size >= maxSize) {
+            throw new RuntimeException();
+        }
+        data[size++] = object;
+    }
+ 
+    public T pop() {
+        if (size <= 0) {
+            throw new EmptyStackException();
+        }
+        T result = data[--size];
+        data[size] = null;
+        return result;
+    }
+ 
+}
