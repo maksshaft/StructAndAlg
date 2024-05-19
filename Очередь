@@ -1,0 +1,57 @@
+public class Queue {
+    private int size;
+    private Object[] queue;
+
+    public Queue(int capacity) {
+        this.size = 0;
+        queue = new Object[capacity];
+    }
+
+    // Добавляем элемент в очередь
+    public void enqueue(Object element) {
+        if (size == queue.length) {
+            throw new IllegalStateException("Queue is full");
+        }
+        queue[size++] = element;
+    }
+
+    // Удаляем и возвращаем первый элемент
+    public Object dequeue() {
+        if (isEmpty()) {
+            return null;
+        } else {
+            Object result = queue[0];
+            for (int i = 1; i < size; i++) {
+                queue[i - 1] = queue[i];
+            }
+            size--;
+            queue[size] = null; // Освобождаем память
+            return result;
+        }
+    }
+
+    // Возвращаем первый элемент без удаления
+    public Object peek() {
+        return queue[0];
+    }
+
+    // Проверяем, пуста ли очередь
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    // Возвращает количество элементов
+    public int size() {
+        return size;
+    }
+
+    // Очищает очередь
+    public void clear() {
+        size = 0;
+        for (int i = 0; i < queue.length; i++) {
+            queue[i] = null;
+        }
+    }
+
+    @Override
+    public String toString()
