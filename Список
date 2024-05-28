@@ -1,0 +1,52 @@
+   public List() {
+      // Инициализация пустого списка
+      elements = new Object[0];
+   }
+
+   // Добавление элемента в конец списка
+   public void add(Object element) {
+      Object[] newElements = new Object[elements.length + 1];
+      for (int i = 0; i < elements.length; i++) {
+         newElements[i] = elements[i];
+      }
+      newElements[newElements.length - 1] = element;
+      elements = newElements;
+   }
+
+   // Получение элемента по индексу
+   public Object get(int index) {
+      return elements[index];
+   }
+
+   // Проверка наличия элемента в списке
+   public boolean contains(Object element) {
+      for (Object obj : elements) {
+         if (obj.equals(element)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   // Удаление элемента из списка
+   public void remove(int index) {
+      Object[] newElements = new Object[elements.length - 1];
+      int i = 0;
+      for (int j = 0; j < elements.length; j++) {
+         if (j != index) {
+            newElements[i++] = elements[j];
+         }
+      }
+      elements = newElements;
+   }
+
+   // Поиск первого вхождения элемента в список
+   public int indexOf(Object element) {
+      for (int i = 0; i < elements.length; i++) {
+         if (elements[i].equals(element)) {
+            return i;
+         }
+      }
+      return -1;
+   }
+}
