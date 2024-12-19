@@ -1,0 +1,143 @@
+package com.zoo.animals;
+
+public interface Animal {
+    void makeSound();
+    void feed();
+}
+
+package com.zoo.animals;
+
+public abstract class AbstractAnimal implements Animal {
+    protected String name;
+    protected int age;
+
+    public AbstractAnimal(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Animal: " + name + ", Age: " + age;
+    }
+}
+
+package com.zoo.animals;
+
+public class Lion extends AbstractAnimal {
+    public Lion(String name, int age) {
+        super(name, age);
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println("Рык льва!");
+    }
+
+    @Override
+    public void feed() {
+        System.out.println(name + " ест мясо.");
+    }
+}
+
+public class Elephant extends AbstractAnimal {
+    public Elephant(String name, int age) {
+        super(name, age);
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println("Трубление слона!");
+    }
+
+    @Override
+    public void feed() {
+        System.out.println(name + " ест траву.");
+    }
+}
+
+package com.zoo.enclosure;
+
+import com.zoo.animals.Animal;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Enclosure {
+    private String name;
+    private List<Animal> animals;
+
+    public Enclosure(String name) {
+        this.name = name;
+        this.animals = new ArrayList<>();
+    }
+
+    public void addAnimal(Animal animal) {
+        animals.add(animal);
+        System.out.println(animal + " добавлен в вольер " + name);
+    }
+
+    public void showAnimals() {
+        System.out.println("Вольер: " + name);
+        for (Animal animal : animals) {
+            System.out.println(animal);
+        }
+    }
+}
+
+package com.zoo.zookeeper;
+
+import com.zoo.animals.Animal;
+import com.zoo.enclosure.Enclosure;
+
+public class Zookeeper {
+    private String name;
+
+    public Zookeeper(String name) {
+        this.name = name;
+    }
+
+    public void feedAnimals(Enclosure enclosure) {
+        System.out.println(name + " кормит животных в вольере:");
+        for (Animal animal : enclosure.getAnimals()) {
+            animal.feed();
+        }
+    }
+}
+
+package com.zoo.utils;
+
+public interface CareTaker {
+    void takeCareOfAnimals();
+}
+
+import com.zoo.animals.Lion;
+import com.zoo.animals.Elephant;
+import com.zoo.enclosure.Enclosure;
+import com.zoo.zookeeper.Zookeeper;
+
+public class Main {
+    public static void main(String[] args) {
+        // Создаем животных
+        Lion lion = new Lion("Лев", 5);
+        Elephant elephant = new Elephant("Слон", 10);
+
+        // Создаем вольер и добавляем животных
+        Enclosure lionEnclosure = new Enclosure("Вольер с львами");
+        lionEnclosure.addAnimal(lion);
+
+        Enclosure elephantEnclosure = new Enclosure("Вольер со слонами");
+        elephantEnclosure.addAnimal(elephant);
+
+        // Создаем смотрителя зоопарка
+        Zookeeper zookeeper = new Zookeeper("Алексей");
+
+        // Показываем животных в вольерах
+        lionEnclosure.showAnimals();
+        elephantEnclosure.showAnimals();
+
+        // Смотритель кормит животных
+        zookeeper.feedAnimals(lionEnclosure);
+        zookeeper.feedAnimals(elephantEnclosure);
+    }
+}
+
