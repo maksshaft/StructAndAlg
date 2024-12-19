@@ -1,0 +1,33 @@
+// Интерфейс Animal
+interface Animal {
+    void makeSound();
+}
+
+// Класс Dog, реализующий интерфейс Animal
+class Dog implements Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Bark");
+    }
+}
+
+// Класс Cat, реализующий интерфейс Animal
+class Cat implements Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Meow");
+    }
+}
+
+// Главный класс для тестирования полиморфизма
+public class Main {
+    public static void main(String[] args) {
+        // Создаем массив объектов типа Animal
+        Animal[] animals = {new Dog(), new Cat()};
+
+        // Вызов метода makeSound для каждого животного
+        for (Animal animal : animals) {
+            animal.makeSound(); // Вызовет соответствующий метод в зависимости от типа объекта
+        }
+    }
+}
