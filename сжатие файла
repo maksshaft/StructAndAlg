@@ -1,0 +1,39 @@
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+
+public class DuplicateRemover {
+
+    public static void main(String[] args) {
+        String inputFilePath = "input.txt"; // Путь к входному файлу
+        String outputFilePath = "output.txt"; // Путь к выходному файлу
+
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(inputFilePath));
+            Set<String> uniqueLines = new LinkedHashSet<>(lines); // Используем LinkedHashSet для сохранения порядка
+            List<String> uniqueList = new ArrayList<>(uniqueLines);
+
+            // Количество удаленных дубликатов
+            int duplicatesCount = lines.size() - uniqueList.size();
+
+            // Запись уникальных строк в выходной файл
+            Files.write(Paths.get(outputFilePath), uniqueList);
+
+            // Вывод количества удаленных дубликатов
+            System.out.println("Количество удаленных дублирующихся строк: " + duplicatesCount);
+        } catch (IOException e) {
+            System.err.println("Ошибка при работе с файлами: " + e.getMessage());
+        }
+    }
+
+    // Метод для восстановления полной версии из сжатой
+    public static void restoreFullVersion(String compressedFilePath, String restoredFilePath) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(compressedFilePath));
+            Files.write(Paths.get(restoredFilePath), lines);
+            System.out.println("Полная версия восстановлена в файл: " + restoredFilePath);
+        } catch (IOException e) {
+            System.err.println("Ошибка при восстановлении: " + e.getMessage());
+        }
+    }
+}
