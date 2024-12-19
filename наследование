@@ -1,0 +1,22 @@
+// Родительский класс
+class Animal {
+    void eat() {
+        System.out.println("Это животное ест пищу.");
+    }
+}
+
+// Дочерний класс
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Собака лает.");
+    }
+}
+
+// Главный класс для запуска программы
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog();
+        dog.eat(); // Вызов унаследованного метода
+        dog.bark(); // Вызов метода дочернего класса
+    }
+}
