@@ -1,0 +1,84 @@
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import java.awt.*;
+import java.io.File;
+
+public class XMLParserWithJTree extends JFrame {
+    private JTree tree;
+
+    public XMLParserWithJTree(String xmlFilePath) {
+        // Настройка окна
+        setTitle("XML Parser with JTree");
+        setSize(600, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Создание корневого узла дерева
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("XML Document");
+
+        // Парсинг XML-файла и построение дерева
+        parseXML(xmlFilePath, root);
+
+        // Создание JTree и добавление его в JScrollPane
+        tree = new JTree(root);
+        JScrollPane scrollPane = new JScrollPane(tree);
+        add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void parseXML(String xmlFilePath, DefaultMutableTreeNode parent) {
+        try {
+            // Создание фабрики и построителя документа
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(xmlFilePath));
+
+            // Получение корневого элемента
+            Element rootElement = document.getDocumentElement();
+            DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootElement.getTagName());
+            parent.add(rootNode);
+
+            // Рекурсивное добавление узлов
+            addChildNodes(rootElement, rootNode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Ошибка при парсинге XML: " + e.getMessage());
+        }
+    }
+
+    private void addChildNodes(Node node, DefaultMutableTreeNode parent) {
+        NodeList children = node.getChildNodes();
+        
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) child;
+                DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(element.getTagName());
+                parent.add(childNode);
+                
+                // Добавление текстового содержимого, если есть
+                if (element.hasChildNodes()) {
+                    addChildNodes(element, childNode);
+                }
+                
+                // Добавление текстового узла, если это текстовый узел
+            } else if (child.getNodeType() == Node.TEXT_NODE) {
+                String textContent = child.getTextContent().trim();
+                if (!textContent.isEmpty()) {
+                    DefaultMutableTreeNode textNode = new DefaultMutableTreeNode(textContent);
+                    parent.add(textNode);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            String xmlFilePath = "path/to/your/xmlfile.xml"; // Укажите путь к вашему XML-файлу
+            XMLParserWithJTree parserFrame = new XMLParserWithJTree(xmlFilePath);
+            parserFrame.setVisible(true);
+        });
+    }
+}
