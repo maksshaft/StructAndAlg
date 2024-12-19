@@ -1,0 +1,40 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class LayoutManagerDemo extends JFrame {
+    public LayoutManagerDemo() {
+        // Настройка основного окна
+        setTitle("Demo of Layout Managers");
+        setSize(400, 300);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Установка BorderLayout для основного контейнера
+        setLayout(new BorderLayout());
+
+        // Создание панели с FlowLayout
+        JPanel flowPanel = new JPanel();
+        flowPanel.setLayout(new FlowLayout());
+
+        // Добавление кнопок в панель с FlowLayout
+        for (int i = 1; i <= 5; i++) {
+            flowPanel.add(new JButton("Button " + i));
+        }
+
+        // Добавление панели с FlowLayout в центр основного окна
+        add(flowPanel, BorderLayout.CENTER);
+
+        // Добавление кнопок в верхнюю часть окна с помощью BorderLayout
+        JPanel topPanel = new JPanel();
+        topPanel.add(new JButton("Top Button 1"));
+        topPanel.add(new JButton("Top Button 2"));
+        add(topPanel, BorderLayout.NORTH);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            LayoutManagerDemo demo = new LayoutManagerDemo();
+            demo.setVisible(true);
+        });
+    }
+}
