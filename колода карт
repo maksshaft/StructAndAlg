@@ -1,0 +1,84 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+// Класс, представляющий карту
+class Card {
+    private String suit; // Масть
+    private String rank; // Ранг
+
+    public Card(String suit, String rank) {
+        this.suit = suit;
+        this.rank = rank;
+    }
+
+    @Override
+    public String toString() {
+        return rank + " of " + suit;
+    }
+}
+
+// Класс, представляющий колоду карт
+class Deck {
+    private List<Card> cards; // Список карт в колоде
+
+    public Deck() {
+        cards = new ArrayList<>();
+        String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};
+        String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
+
+        // Создаем карты и добавляем их в колоду
+        for (String suit : suits) {
+            for (String rank : ranks) {
+                cards.add(new Card(suit, rank));
+            }
+        }
+    }
+
+    // Метод для перетасовки колоды
+    public void shuffle() {
+        Collections.shuffle(cards);
+    }
+
+    // Метод для сдачи карты
+    public Card dealCard() {
+        if (cards.isEmpty()) {
+            return null; // Если колода пуста, возвращаем null
+        }
+        return cards.remove(cards.size() - 1); // Удаляем последнюю карту и возвращаем ее
+    }
+
+    // Метод для возврата карты в колоду с контролем дублирования
+    public boolean returnCard(Card card) {
+        if (!cards.contains(card)) { // Проверяем, есть ли карта в колоде
+            cards.add(card); // Если нет, добавляем карту обратно в колоду
+            return true; // Возврат успешный
+        }
+        return false; // Карта уже есть в колоде
+    }
+
+    // Метод для получения количества оставшихся карт в колоде
+    public int getRemainingCards() {
+        return cards.size();
+    }
+}
+
+// Главный класс для тестирования
+public class Main {
+    public static void main(String[] args) {
+        Deck deck = new Deck(); // Создаем новую колоду карт
+        deck.shuffle(); // Перетасовываем колоду
+
+        System.out.println("Сдача карты: " + deck.dealCard()); // Сдаем одну карту
+        System.out.println("Осталось карт: " + deck.getRemainingCards()); // Количество оставшихся карт
+
+        Card returnedCard = new Card("Hearts", "Ace"); // Создаем карту для возврата
+        if (deck.returnCard(returnedCard)) {
+            System.out.println("Карта возвращена в колоду: " + returnedCard);
+        } else {
+            System.out.println("Карта уже есть в колоде: " + returnedCard);
+        }
+
+        System.out.println("Осталось карт после возврата: " + deck.getRemainingCards());
+    }
+}
