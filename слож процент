@@ -1,0 +1,33 @@
+import java.util.Scanner;
+
+public class CompoundInterestCalculator {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Ввод начальной суммы
+        System.out.print("Введите начальную сумму (P): ");
+        double principal = scanner.nextDouble();
+
+        // Ввод процентной ставки
+        System.out.print("Введите годовую процентную ставку (в %): ");
+        double annualRate = scanner.nextDouble();
+
+        // Ввод количества периодов
+        System.out.print("Введите количество периодов (t в годах): ");
+        int years = scanner.nextInt();
+
+        // Ввод количества начислений в год
+        System.out.print("Введите количество начислений процентов в год (n): ");
+        int compoundingFrequency = scanner.nextInt();
+
+        // Преобразование процентной ставки в десятичный вид
+        double rate = annualRate / 100;
+
+        // Вычисление итоговой суммы
+        double amount = principal * Math.pow((1 + rate / compoundingFrequency), compoundingFrequency * years);
+
+        // Вывод результата
+        System.out.printf("Итоговая сумма после %.2f лет составит: %.2f%n", (double) years, amount);
+    }
+}
