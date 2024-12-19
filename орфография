@@ -1,0 +1,145 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+
+public class TextEditor extends JFrame {
+    private JTextArea textArea;
+    private JFileChooser fileChooser;
+    private Map<String, String> dictionary; // Словарь для автозамены
+    private boolean running = false;
+
+    public TextEditor() {
+        // Настройка окна
+        setTitle("Текстовый редактор с автозаменой");
+        setSize(600, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Создание текстовой области
+        textArea = new JTextArea();
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        add(scrollPane, BorderLayout.CENTER);
+
+        // Создание меню
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("Файл");
+
+        // Создание пунктов меню
+        JMenuItem openItem = new JMenuItem("Открыть");
+        JMenuItem saveItem = new JMenuItem("Сохранить");
+        JMenuItem exitItem = new JMenuItem("Выход");
+
+        // Добавление слушателей к пунктам меню
+        openItem.addActionListener(e -> openFile());
+        saveItem.addActionListener(e -> saveFile());
+        exitItem.addActionListener(e -> System.exit(0));
+
+        // Добавление пунктов в меню
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+
+        menuBar.add(fileMenu);
+        setJMenuBar(menuBar);
+
+        // Инициализация словаря для автозамены
+        initializeDictionary();
+
+        // Добавление слушателя для пробела
+        textArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    startAutoReplaceThread();
+                }
+            }
+        });
+    }
+
+    private void initializeDictionary() {
+        dictionary = new HashMap<>();
+        dictionary.put("teh", "the");
+        dictionary.put("recieve", "receive");
+        dictionary.put("adress", "address");
+    }
+
+    private void openFile() {
+        fileChooser = new JFileChooser();
+        int option = fileChooser.showOpenDialog(this);
+
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                textArea.setText("");
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    textArea.append(line + "\n");
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Ошибка при открытии файла: " + e.getMessage());
+            }
+        }
+    }
+
+    private void saveFile() {
+        fileChooser = new JFileChooser();
+        int option = fileChooser.showSaveDialog(this);
+
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(textArea.getText());
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Ошибка при сохранении файла: " + e.getMessage());
+            }
+        }
+    }
+
+    private void startAutoReplaceThread() {
+        if (!running) {
+            running = true;
+            SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    while (running) {
+                        String text = textArea.getText();
+                        String[] words = text.split("\\s+");
+                        for (int i = 0; i < words.length; i++) {
+                            if (dictionary.containsKey(words[i])) {
+                                words[i] = dictionary.get(words[i]);
+                                publish(String.join(" ", words));
+                                break; // Заменяем только первое найденное слово
+                            }
+                        }
+                        Thread.sleep(1000); // Проверка каждую секунду
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void process(java.util.List<String> chunks) {
+                    for (String updatedText : chunks) {
+                        textArea.setText(updatedText);
+                    }
+                }
+
+                @Override
+                protected void done() {
+                    running = false;
+                }
+            };
+            worker.execute();
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            TextEditor editor = new TextEditor();
+            editor.setVisible(true);
+        });
+    }
+}
