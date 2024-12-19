@@ -1,0 +1,52 @@
+import java.util.Scanner;
+
+public class SimpleCalculator {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите выражение (например, 2 * 6.5): ");
+        
+        // Считываем строку
+        String input = scanner.nextLine();
+        
+        // Разбиваем строку на составляющие
+        String[] parts = input.split(" ");
+        
+        if (parts.length != 3) {
+            System.out.println("Некорректный ввод. Пожалуйста, используйте формат: число1 оператор число2");
+            return;
+        }
+
+        // Парсим числа и оператор
+        double number1 = Double.parseDouble(parts[0]);
+        String operator = parts[1];
+        double number2 = Double.parseDouble(parts[2]);
+
+        // Вычисляем результат
+        double result;
+        switch (operator) {
+            case "+":
+                result = number1 + number2;
+                break;
+            case "-":
+                result = number1 - number2;
+                break;
+            case "*":
+                result = number1 * number2;
+                break;
+            case "/":
+                if (number2 == 0) {
+                    System.out.println("Ошибка: деление на ноль.");
+                    return;
+                }
+                result = number1 / number2;
+                break;
+            default:
+                System.out.println("Некорректный оператор. Используйте +, -, * или /.");
+                return;
+        }
+
+        // Выводим результат
+        System.out.println("Результат: " + result);
+    }
+}
